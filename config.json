@@ -1,0 +1,20 @@
+{
+    "url" : "https://yandex.ru/jobs/?cities=213",
+    "selectors": {
+        "block": "//div[@class='layout__left']/div[@class='layout__section']",
+        "category": "//a[contains(@class,'button_js_inited')]",
+        "link":"//div[@class='serp__item']/a[@class='link']",
+        "title":"//*[contains(@class,'page-content__title')]",
+        "tags":"//*[contains(@class,'vacancy__tags')]/span",
+        "text": [
+            {
+                "text": "//*[contains(@class,'wiki-p')]",
+                "sub_title": "./*[contains(@class,'wiki-bold')]"
+            },
+            {
+                "title": "//h3[contains(@class,'wiki-head')]",
+                "text": "//*[contains(@class,'wiki-list')]"
+            }
+        ]
+    }
+}
