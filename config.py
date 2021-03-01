@@ -18,12 +18,12 @@ try:
     #BASE
     db_path = conf.get("BASE", "path")
 
-    #MiSC    
+    #MiSC
     try:
         max_repeat = int(conf.get("MISC", "max_repeat"))
     except :
         max_repeat = 1
-    
+
 except:
     print("Error in conf.ini...")
     input("Enter for exit...")

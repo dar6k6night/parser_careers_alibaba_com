@@ -11,6 +11,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 import requests
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 def driver_init(proxy=None):
@@ -62,7 +63,7 @@ def driver_init(proxy=None):
             if proxy!=None:
                 options.add_argument('--proxy-server=socks5://%s' % proxy)
             capabilities = options.to_capabilities()
-            driver = webdriver.Chrome(desired_capabilities=capabilities)
+            driver = webdriver.Chrome(ChromeDriverManager().install(), desired_capabilities=capabilities)
             driver.set_window_size(1024,768)
             print('Chromedriver load... success')
             return driver
@@ -127,14 +128,19 @@ def scrollDown(driver, value):
 
 def scrollDownAllTheWay(driver):
     old_page = driver.page_source
+    t = 1
     while True:
         for i in range(2):
             scrollDown(driver, 2000)
+            print(t, "scrollDown")
+            t += 1
             time.sleep(3)
         new_page = driver.page_source
         if new_page != old_page:
             old_page = new_page
         else:
+            break
+        if t >= 5:
             break
     return True
 

@@ -1,20 +1,7 @@
 {
-    "url" : "https://yandex.ru/jobs/?cities=213",
+    "url" : "https://www.farpost.ru/user/TedAuto54/auto/sell_spare_parts/+/%CC%CA%CF%CF/",
     "selectors": {
-        "block": "//div[@class='layout__left']/div[@class='layout__section']",
-        "category": "//a[contains(@class,'button_js_inited')]",
-        "link":"//div[@class='serp__item']/a[@class='link']",
-        "title":"//*[contains(@class,'page-content__title')]",
-        "tags":"//*[contains(@class,'vacancy__tags')]/span",
-        "text": [
-            {
-                "text": "//*[contains(@class,'wiki-p')]",
-                "sub_title": "./*[contains(@class,'wiki-bold')]"
-            },
-            {
-                "title": "//h3[contains(@class,'wiki-head')]",
-                "text": "//*[contains(@class,'wiki-list')]"
-            }
-        ]
+        "block": "//tbody[@class='native']/tr",
+        "link":"//div[@class='bull-item-content__subject-container']/a[@class='bulletinLink bull-item__self-link auto-shy']"
     }
 }

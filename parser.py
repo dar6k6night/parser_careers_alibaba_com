@@ -15,33 +15,21 @@ def saveErrors(error_file, errors):
             json.dump(errors, outfile, ensure_ascii = False, indent=0)
 
 def main():
+    config_file = "config.json"
+    error_file = "error.json"
     errors = []
-    usage = "Использование: %prog [опции] арг"
-    parser = OptionParser(usage)
-    parser.add_option("-c", "--config",default='in.json', dest="in_file",
-                      help="Относительный путь к файлу. in.json По умолчанию: in.json")
-    parser.add_option("-o", "--output ",default='out.json', dest="out_file",
-                      help="Относительный путь к файлу. out.json По умолчанию: out.json")
-    parser.add_option("-e", "--errors ",default='error.json', dest="error_file",
-                      help="Относительный путь к файлу. error.json По умолчанию: error.json")
-
-    (options, args) = parser.parse_args()
     try:
-        with open(options.in_file, encoding="utf8") as json_file:
+        with open(config_file, encoding="utf8") as json_file:
             conf = json.load(json_file)
 
         url = conf['url']
         block_xpaths = conf['selectors']['block']
-        category_xpath = conf['selectors']['category']
         link_xpaths = conf['selectors']['link']
-        vacancy_title_xpath= conf['selectors']['title']
-        tags_selector_path = conf['selectors']['tags']
-        text_selector_path = conf['selectors']['text']
 
     except Exception as e:
         errors.append(str(traceback.format_exc()))
-        saveErrors(options.error_file, errors)
-        print('Error in in.json')
+        saveErrors(error_file, errors)
+        print('Error in config.json')
         exit(0)
 
     parsed_uri = urlparse(url)
@@ -50,26 +38,16 @@ def main():
     driver = parser_features.driver_init()
     links = []
     if (parser_features.open_site(driver,url,block_xpaths)):
-        category_tree = html.fromstring(driver.page_source)
-        elements = category_tree.xpath(category_xpath)
+        parser_features.scrollDownAllTheWay(driver)
+        links_tree = html.fromstring(driver.page_source)
+        elements = links_tree.xpath(link_xpaths)
         if (elements):
             for element in elements:
-                try:
-                    try:
-                        category_href = url_domain + element.attrib['href']
-                    except Exception as e:
-                        continue
-                    parser_features.open_site(driver,category_href,link_xpaths)
+                links.append(url_domain + element.attrib['href'])
 
-                    tree = html.fromstring(driver.page_source)
-                    vacancy_hrefs=tree.xpath(link_xpaths)
-                    for vacancy_href in vacancy_hrefs:
-                        links.append(url_domain + vacancy_href.attrib['href'])
+    print('Find %i' % len(links))
 
-                except Exception as e:
-                    errors.append(str(traceback.format_exc()))
-
-    print('Find %i vacancy'%len(links))
+    exit()
 
     if len(links) == 0:
         errors.append("Ни один урл не найден")
@@ -91,7 +69,7 @@ def main():
     with open(options.out_file, 'w', encoding="utf-8") as outfile:
         json.dump(answers, outfile, ensure_ascii = False, indent=0)
 
-    saveErrors(options.error_file, errors)
+    saveErrors(error_file, errors)
 
 def parse_vacancy(errors,
                   driver,
